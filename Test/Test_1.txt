@@ -1,0 +1,7 @@
+Matrix shape (30000, 2000)
+get_distance_matrix_and_neighbors 46.50514483451843 seconds
+parallel (4 threads):
+approx_get_distance_matrix_and_neighbors 156.8386332988739 seconds
+Average precision is 18.0 %
+_____________________________
+0:03:24.838 - total wall time
