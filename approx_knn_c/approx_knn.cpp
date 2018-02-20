@@ -16,10 +16,10 @@ void get_distances_and_neighbors(double* X, int N, int D, int* knn, double* dist
 
 		AnnoyIndex<int, double, Euclidean, Kiss32Random> tree = AnnoyIndex<int, double, Euclidean, Kiss32Random>(D);
 
-		for(int i=0; i<N; ++i){
+    for(int i=0; i<N; ++i){
       double *vec = new double[D];
 
-			for(int z=0; z<D; ++z){
+      for(int z=0; z<D; ++z){
         vec[z] = X[i*D+z];
 			}
 			tree.add_item(i, vec);
