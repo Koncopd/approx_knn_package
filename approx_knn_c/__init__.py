@@ -18,13 +18,13 @@ class FuncThread(threading.Thread):
         self._target(*self._args)
 
 
-def get_dists_and_knn(X, K, num_trees, search_k):
+def get_dists_and_knn(X, K, num_trees, search_k, n_jobs):
 
     ffi = cffi.FFI()
     ffi.cdef(
             """void get_distances_and_neighbors(double* X, int N, int D,
                                                 int* knn, double* dists, int K,
-                                                int num_trees, int search_k);""")
+                                                int num_trees, int search_k, int nthreads);""")
 
     path = os.path.dirname(os.path.realpath(__file__))
     try:
@@ -47,7 +47,7 @@ def get_dists_and_knn(X, K, num_trees, search_k):
     cffi_dists = ffi.cast('double*', dists.ctypes.data)
 
     t = FuncThread(C.get_distances_and_neighbors, cffi_X, N, D,
-                                                    cffi_knn, cffi_dists, K, num_trees, search_k)
+                                                    cffi_knn, cffi_dists, K, num_trees, search_k, n_jobs)
     t.daemon = True
     t.start()
 

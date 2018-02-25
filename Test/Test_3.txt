@@ -1,0 +1,8 @@
+Matrix shape (30000, 2000)
+get_distance_matrix_and_neighbors 43.2817907333374 seconds
+approx_annoy_knn 133.15580415725708 seconds
+knn_nmslib 80.3132700920105 seconds
+Annoy average precision for (num_trees=120, search_k=2500) is 18.0 %
+Nmslib average precision is 33.0 %
+_____________________________
+0:04:18.796 - total wall time

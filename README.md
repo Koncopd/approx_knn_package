@@ -5,3 +5,4 @@ python setup.py install
 cd Test
 python Test.py
 ```
+![Time](Test/time.png)

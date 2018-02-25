@@ -12,7 +12,7 @@ extern "C"
   __declspec(dllexport)
   #endif
 
-  void get_distances_and_neighbors(double* X, int N, int D, int* knn, double* dists, int K, int num_trees, int search_k) {
+  void get_distances_and_neighbors(double* X, int N, int D, int* knn, double* dists, int K, int num_trees, int search_k, int nthreads) {
 
     AnnoyIndex<int, double, Euclidean, Kiss32Random> tree = AnnoyIndex<int, double, Euclidean, Kiss32Random>(D);
 
@@ -40,9 +40,6 @@ extern "C"
       }
     }
 
-    const size_t nthreads = std::thread::hardware_concurrency();
-
-    std::cout<<"Parallel ("<<nthreads<<" threads)"<<std::endl;
     std::vector<std::thread> threads(nthreads);
     for(int t = 0;t<nthreads;t++)
     {

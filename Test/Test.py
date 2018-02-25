@@ -1,27 +1,29 @@
 import time
 import numpy as np
-from approx_knn_c import get_dists_and_knn
-from scanpy.data_structs.data_graph import get_distance_matrix_and_neighbors, get_sparse_distance_matrix
+import nmslib, scipy
+import utils as u
+import multiprocessing as mt
 
-def approx_get_distance_matrix_and_neighbors(X, k, n_jobs=1):
-    dists, knn = get_dists_and_knn(X, k-1, 120, 2500)
-    dists = dists**2
-    Dsq = get_sparse_distance_matrix(knn, dists, X.shape[0], k)
-    return Dsq, knn, dists
+num_jobs = mt.cpu_count()
 
 X = np.random.rand(30000, 2000)
 
 print('Matrix shape', X.shape)
 
 t0 = time.time()
-_, knn, dists = get_distance_matrix_and_neighbors(X, 10, n_jobs=1)
+_, knn, dists = u.get_distance_matrix_and_neighbors(X, 10, n_jobs=1)
 t1 = time.time()
 print('get_distance_matrix_and_neighbors', t1 - t0, 'seconds')
 
 t0 = time.time()
-_, knn_a, dists_a = approx_get_distance_matrix_and_neighbors(X, 10)
+_, knn_a, dists_a = u.approx_annoy_knn(X, 10, num_jobs)
 t1 = time.time()
-print('approx_get_distance_matrix_and_neighbors', t1 - t0, 'seconds')
+print('approx_annoy_knn', t1 - t0, 'seconds')
+
+t0 = time.time()
+_, knn_n, dists_n = u.approx_knn_nmslib(X, 10, n_jobs=num_jobs)
+t1 = time.time()
+print('knn_nmslib', t1 - t0, 'seconds')
 
 total = 0
 
@@ -30,4 +32,13 @@ for i, row in enumerate(knn):
 
 total/=knn.shape[0]
 total/=knn.shape[1]
-print('Average precision is', np.ceil(total*100), '%')
+print('Annoy average precision for (num_trees=120, search_k=2500) is', np.ceil(total*100), '%')
+
+total = 0
+
+for i, row in enumerate(knn):
+    total+=np.in1d(knn_n[i], row).sum()
+
+total/=knn.shape[0]
+total/=knn.shape[1]
+print('Nmslib average precision is', np.ceil(total*100), '%')
