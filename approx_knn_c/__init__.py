@@ -36,7 +36,7 @@ def get_dists_and_knn(X, K, num_trees, search_k, n_jobs):
 
     assert X.ndim == 2, 'X should be 2D array.'
 
-    X = np.array(X, dtype=float, order='C', copy=True)
+    X = np.array(X, dtype=float, order='C', copy=False)
     N, D = X.shape
 
     knn = np.zeros((N, K), dtype='intc')
